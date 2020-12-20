@@ -5,7 +5,7 @@ using AutoMapper;
 using GloboTicket.Services.ShoppingBasket.Models;
 using GloboTicket.Services.ShoppingBasket.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
+using SegaetshoResources.Services.ShoppingBasket.Entities;
 
 namespace SegaetshoResources.Services.ShoppingBasket.Controllers
 {

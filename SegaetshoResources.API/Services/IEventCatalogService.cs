@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Segaetsho.API.Controllers.Web.Models.Api;
+using SegaetshoResources.API.Models;
 
 namespace SegaetshoResources.API.Services
 {

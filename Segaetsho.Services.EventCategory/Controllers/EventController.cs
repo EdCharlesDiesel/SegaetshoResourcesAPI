@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Segaetsho.API.Controllers.Services.EventCatalog.Repositories;
+using SegaetshoResources.Services.EventCategory.Repositories;
 
 namespace SegaetshoResources.Services.EventCategory.Controllers
 {

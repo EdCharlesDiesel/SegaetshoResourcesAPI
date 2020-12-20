@@ -3,8 +3,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using GloboTicket.Services.ShoppingBasket.Entities;
 using GloboTicket.Services.ShoppingBasket.Extensions;
+using SegaetshoResources.Services.ShoppingBasket.Entities;
+using SegaetshoResources.Services.ShoppingBasket.Extensions;
 
-namespace GloboTicket.Services.ShoppingBasket.Services
+namespace SegaetshoResources.Services.ShoppingBasket.Services
 {
     public class EventCatalogService : IEventCatalogService
     {

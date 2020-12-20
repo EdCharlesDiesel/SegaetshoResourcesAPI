@@ -3,10 +3,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using SegaetshoResources.Services.ShoppingBasket.DbContexts;
+using SegaetshoResources.Services.ShoppingBasket.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +34,7 @@ namespace SegaetshoResources.Services.ShoppingBasket
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddScoped<IBasketRepository, BasketRepository>();
-            services.AddScoped<IBasketLinesRepository, BasketLinesRepository>();
-            services.AddScoped<IEventRepository, EventRepository>();
+     
             services.AddHttpClient<IEventCatalogService, EventCatalogService>(c =>
                 c.BaseAddress = new Uri(Configuration["ApiConfigs:EventCatalog:Uri"]));
 

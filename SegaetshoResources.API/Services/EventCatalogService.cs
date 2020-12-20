@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Segaetsho.API.Controllers.Web.Extensions;
-using Segaetsho.API.Controllers.Web.Models.Api;
+
+using SegaetshoResources.API.Extensions;
+using SegaetshoResources.API.Models;
 
 namespace SegaetshoResources.API.Services
 {

@@ -1,5 +1,5 @@
-﻿using GloboTicket.Services.ShoppingBasket.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SegaetshoResources.Services.ShoppingBasket.Entities;
 
 namespace SegaetshoResources.Services.ShoppingBasket.DbContexts
 {
