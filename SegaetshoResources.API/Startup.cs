@@ -17,9 +17,13 @@ namespace SegaetshoResources.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IHostEnvironment environment;
+        private readonly IConfiguration config;
+
+        public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
-            Configuration = configuration;
+            config = configuration;
+            this.environment = environment;
         }
 
         public IConfiguration Configuration { get; }
@@ -27,6 +31,18 @@ namespace SegaetshoResources.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var builder = services.AddControllersWithViews();
+
+
+
+            services.AddHttpClient<IEventCatalogService, EventCatalogService>(c =>
+                c.BaseAddress = new Uri(config["ApiConfigs:EventCatalog:Uri"]));
+            services.AddHttpClient<IShoppingBasketService, ShoppingBasketService>(c =>
+                c.BaseAddress = new Uri(config["ApiConfigs:ShoppingBasket:Uri"]));
+
+            services.AddSingleton<Settings>();
+
+
 
             services.AddControllers(setupAction =>
             {
@@ -92,7 +108,8 @@ namespace SegaetshoResources.API
             {
                 options.AddPolicy(
                    name: "AllowOrigin",
-                   builder => {
+                   builder =>
+                   {
                        builder.AllowAnyOrigin()
                       .AllowAnyMethod()
                       .AllowAnyHeader();
