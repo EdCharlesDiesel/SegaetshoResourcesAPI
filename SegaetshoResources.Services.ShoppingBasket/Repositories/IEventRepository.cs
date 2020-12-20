@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SegaetshoResources.Services.ShoppingBasket.Entities;
+using System;
 using System.Threading.Tasks;
-using GloboTicket.Services.ShoppingBasket.Entities;
 
-namespace GloboTicket.Services.ShoppingBasket.Repositories
+
+namespace SegaetshoResources.Services.ShoppingBasket.Repositories
 {
     public interface IEventRepository
     {

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SegaetshoResources.Services.TourManagement.Models;
+using SegaetshoResources.Services.TourManagement.Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

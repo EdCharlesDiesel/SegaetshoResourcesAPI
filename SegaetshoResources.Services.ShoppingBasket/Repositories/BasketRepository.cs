@@ -1,13 +1,12 @@
-﻿using GloboTicket.Services.ShoppingBasket.DbContexts;
-using GloboTicket.Services.ShoppingBasket.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SegaetshoResources.Services.ShoppingBasket.DbContexts;
+using SegaetshoResources.Services.ShoppingBasket.Entities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GloboTicket.Services.ShoppingBasket.Repositories
-{
+namespace SegaetshoResources.Services.ShoppingBasket.Repositories
+ {
     public class BasketRepository : IBasketRepository
     {
         private readonly ShoppingBasketDbContext _shoppingBasketDbContext;

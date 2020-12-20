@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SegaetshoResources.Services.EventCategory.Models;
 using SegaetshoResources.Services.EventCategory.Repositories;
 
 namespace SegaetshoResources.Services.EventCategory.Controllers

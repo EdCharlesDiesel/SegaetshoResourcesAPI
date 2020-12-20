@@ -1,79 +1,318 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Segaetsho.API.Controllers.Services.EventCatalog.Entities;
+using SegaetshoResources.Services.TourManagement.Entities;
+using SegaetshoResources.Services.TourManagement.Services;
 
 namespace SegaetshoResources.Services.EventCategory.DbContexts
 {
     public class TourManagementDbContext : DbContext
     {
-        public TourManagementDbContext(DbContextOptions<TourManagementDbContext> options) : base(options)
-        {
+         public DbSet<Tour> Tours { get; set; }
 
+        public DbSet<Show> Shows { get; set; }
+
+        public DbSet<Band> Bands { get; set; }
+
+        public DbSet<Manager> Managers { get; set; }
+
+        public DbSet<Booking> Bookings { get; set; }
+
+        private readonly IUserInfoService _userInfoService;
+
+    
+        public TourManagementDbContext(DbContextOptions<SegaetshoResourcesContext> options,
+            IUserInfoService userInfoService)
+           : base(options)
+        {
+            // userInfoService is a required argument
+            _userInfoService = userInfoService ?? throw new ArgumentNullException(nameof(userInfoService));
         }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Event> Events { get; set; }
+        
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // get added or updated entries
+            var addedOrUpdatedEntries = ChangeTracker.Entries()
+                    .Where(x => (x.State == EntityState.Added || x.State == EntityState.Modified));
+
+            // fill out the audit fields
+            foreach (var entry in addedOrUpdatedEntries)
+            {
+                var entity = entry.Entity as AuditableEntity;
+
+                if (entry.State == EntityState.Added)
+                {
+                    entity.CreatedBy = _userInfoService.UserId;
+                    entity.CreatedOn = DateTime.UtcNow;
+                }
+
+                entity.UpdatedBy = _userInfoService.UserId;
+                entity.UpdatedOn = DateTime.UtcNow;
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // seed the database with dummy data
+       
+
+
+            modelBuilder.Entity<Manager>().HasData(
+                new Manager()
+                {
+                    ManagerId = new Guid("fec0a4d6-5830-4eb8-8024-272bd5d6d2bb"),
+                    Name = "Khotso Charles",
+                    CreatedBy = "system",
+                    CreatedOn = DateTime.UtcNow
+                },
+                new Manager()
+                {
+                    ManagerId = new Guid("c3b7f625-c07f-4d7d-9be1-ddff8ff93b4d"),
+                    Name = "Kagiso Ethan",
+                    CreatedBy = "system",
+                    CreatedOn = DateTime.UtcNow
+                });
+
+            modelBuilder.Entity<Band>().HasData(
+             new Band()
+             {
+                 BandId = new Guid("25320c5e-f58a-4b1f-b63a-8ee07a840bdf"),
+                 Name = "Queens of the Stone Age",
+                 CreatedBy = "system",
+                 CreatedOn = DateTime.UtcNow
+             },
+                new Band()
+                {
+                    BandId = new Guid("83b126b9-d7bf-4f50-96dc-860884155f8b"),
+                    Name = "Nick Cave and the Bad Seeds",
+                    CreatedBy = "system",
+                    CreatedOn = DateTime.UtcNow
+                });
+
+
+
+            modelBuilder.Entity<Booking>().HasData(
+
+                 new Booking()
+                 {
+                     Id = new Guid("25320c5e-f58a-4b1f-b63a-00e07a840bd1"),
+                     Adult = 1,
+                     Children = 1,
+                     Coupon = false,
+                     Rooms = 1,
+                     CreatedBy = "system",
+                     CreatedOn = DateTime.UtcNow,
+                     CheckIn = new DateTimeOffset(2017, 9, 24, 0, 0, 0, new TimeSpan()),
+                     CheckOut = new DateTimeOffset(2017, 9, 24, 0, 0, 0, new TimeSpan()),
+                     Hotels = new List<Hotel>()
+                    {
+                        new Hotel()
+                        {
+                            Id= new Guid(""),
+                            Name="Cabanas",
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        }
+                    }
+                 }
+
+                );
+
+
+            modelBuilder.Entity<Tour>().HasData(
+            new Tour()
+            {
+                TourId = new Guid("c7ba6add-09c4-45f8-8dd0-eaca221e5d93"),
+                BandId = new Guid("25320c5e-f58a-4b1f-b63a-8ee07a840bdf"),
+                ManagerId = new Guid("fec0a4d6-5830-4eb8-8024-272bd5d6d2bb"),
+                Title = "Villains World Tour",
+                Description = "The Villains World Tour is a concert tour in support of the band's seventh studio album, Villains.",
+                StartDate = new DateTimeOffset(2017, 6, 22, 0, 0, 0, new TimeSpan()),
+                EndDate = new DateTimeOffset(2018, 3, 18, 0, 0, 0, new TimeSpan()),
+                EstimatedProfits = 2500000,
+                CreatedBy = "system",
+                CreatedOn = DateTime.UtcNow,
+                Shows = new List<Show>()
+                    {
+                        new Show() {
+                            Venue = "The Rapids Theatre",
+                            City = "Niagara Falls",
+                            Country = "United States",
+                            Date = new DateTimeOffset(2017,6,22,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Marina de Montebello",
+                            City = "Montebello",
+                            Country = "Canada",
+                            Date = new DateTimeOffset(2017,6,24,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Ventura Theatre",
+                            City = "Venture",
+                            Country = "United States",
+                            Date = new DateTimeOffset(2017,8,10,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Golden Gate Park",
+                            City = "San Francisco",
+                            Country = "United States",
+                            Date = new DateTimeOffset(2017,8,12,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Capitol Theatre",
+                            City = "Port Chester",
+                            Country = "United States",
+                            Date = new DateTimeOffset(2017,9,6,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Festival Pier",
+                            City = "Philadelphia",
+                            Country = "United States",
+                            Date = new DateTimeOffset(2017,9,7,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Budweiser Stage",
+                            City = "Toronto",
+                            Country = "Canada",
+                            Date = new DateTimeOffset(2017,9,9,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        }
+                    }
+            },
+                new Tour()
+                {
+                    TourId = new Guid("f67ba678-b6e0-4307-afd9-e804c23b3cd3"),
+                    BandId = new Guid("83b126b9-d7bf-4f50-96dc-860884155f8b"),
+                    ManagerId = new Guid("c3b7f625-c07f-4d7d-9be1-ddff8ff93b4d"),
+                    Title = "Skeleton Tree European Tour",
+                    Description = "Nick Cave and The Bad Seeds have announced an 8-week European tour kicking off in the UK at Bournemouth’s International Centre on 24th September. The tour will be the first time European audiences can experience live songs from new album Skeleton Tree alongside other Nick Cave & The Bad Seeds classics.  The touring line up features Nick Cave, Warren Ellis, Martyn Casey, Thomas Wydler, Jim Sclavunos, Conway Savage, George Vjestica and Larry Mullins.",
+                    StartDate = new DateTimeOffset(2017, 9, 24, 0, 0, 0, new TimeSpan()),
+                    EndDate = new DateTimeOffset(2017, 11, 20, 0, 0, 0, new TimeSpan()),
+                    EstimatedProfits = 1200000,
+                    CreatedBy = "system",
+                    CreatedOn = DateTime.UtcNow,
+                    Shows = new List<Show>()
+                    {
+                        new Show() {
+                            Venue = "Bournemouth International Centre",
+                            City = "Bournemouth",
+                            Country = "United Kingdom",
+                            Date = new DateTimeOffset(2017,9,24,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Arena",
+                            City = "Manchester",
+                            Country = "United Kingdom",
+                            Date = new DateTimeOffset(2017,9,25,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "The SSE Hydro",
+                            City = "Glasgow",
+                            Country = "United Kingdom",
+                            Date = new DateTimeOffset(2017,9,27,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Motorpoint Arena",
+                            City = "Nottingham",
+                            Country = "United Kingdom",
+                            Date = new DateTimeOffset(2017,9,28,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "The O2",
+                            City = "London",
+                            Country = "United Kingdom",
+                            Date = new DateTimeOffset(2017,9,30,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Zénith",
+                            City = "Paris",
+                            Country = "France",
+                            Date = new DateTimeOffset(2017,10,3,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Ziggo Dome",
+                            City = "Amsterdam",
+                            Country = "The Netherlands",
+                            Date = new DateTimeOffset(2017,10,6,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Jahrhunderthalle",
+                            City = "Frankfurt",
+                            Country = "Germany",
+                            Date = new DateTimeOffset(2017,10,7,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Sporthalle",
+                            City = "Hamburg",
+                            Country = "Germany",
+                            Date = new DateTimeOffset(2017,10,9,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Rockhal",
+                            City = "Luxembourg",
+                            Country = "Luxembourg",
+                            Date = new DateTimeOffset(2017,10,10,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Mitsubishi Electric Halle",
+                            City = "Düsseldorf",
+                            Country = "Germany",
+                            Date = new DateTimeOffset(2017,10,10,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        },
+                        new Show() {
+                            Venue = "Sportpaleis",
+                            City = "Antwerp",
+                            Country = "Belgium",
+                            Date = new DateTimeOffset(2017,10,13,0,0,0, new TimeSpan()),
+                            CreatedBy = "system",
+                            CreatedOn = DateTime.UtcNow
+                        }
+                    }
+                });
+
+
+
             base.OnModelCreating(modelBuilder);
-
-            var concertGuid = Guid.Parse("{CFB88E29-4744-48C0-94FA-B25B92DEA314}");
-            var musicalGuid = Guid.Parse("{CFB88E29-4744-48C0-94FA-B25B92DEA315}");
-            var playGuid = Guid.Parse("{CFB88E29-4744-48C0-94FA-B25B92DEA316}");
-
-            modelBuilder.Entity<Category>().HasData(new Category
-            {
-                CategoryId = concertGuid,
-                Name = "Concerts"
-            });
-            modelBuilder.Entity<Category>().HasData(new Category
-            {
-                CategoryId = musicalGuid,
-                Name = "Musicals"
-            });
-            modelBuilder.Entity<Category>().HasData(new Category
-            {
-                CategoryId = playGuid,
-                Name = "Plays"
-            });
-
-            modelBuilder.Entity<Event>().HasData(new Event
-            {
-                EventId = Guid.Parse("{CFB88E29-4744-48C0-94FA-B25B92DEA317}"),
-                Name = "John Egbert Live",
-                Price = 65,
-                Artist = "John Egbert",
-                Date = DateTime.Now.AddMonths(6),
-                Description = "Join John for his farwell tour across 15 continents. John really needs no introduction since he has already mesmerized the world with his banjo.",
-                ImageUrl = "/img/banjo.jpg",
-                CategoryId = concertGuid
-            });
-
-            modelBuilder.Entity<Event>().HasData(new Event
-            {
-                EventId = Guid.Parse("{CFB88E29-4744-48C0-94FA-B25B92DEA319}"),
-                Name = "The State of Affairs: Michael Live!",
-                Price = 85,
-                Artist = "Michael Johnson",
-                Date = DateTime.Now.AddMonths(9),
-                Description = "Michael Johnson doesn't need an introduction. His 25 concert across the globe last year were seen by thousands. Can we add you to the list?",
-                ImageUrl = "/img/michael.jpg",
-                CategoryId = concertGuid
-            });
-
-
-            modelBuilder.Entity<Event>().HasData(new Event
-            {
-                EventId = Guid.Parse("{CFB88E29-4744-48C0-94FA-B25B92DEA318}"),
-                Name = "To the Moon and Back",
-                Price = 135,
-                Artist = "Nick Sailor",
-                Date = DateTime.Now.AddMonths(8),
-                Description = "The critics are over the moon and so will you after you've watched this sing and dance extravaganza written by Nick Sailor, the man from 'My dad and sister'.",
-                ImageUrl = "/img/musical.jpg",
-                CategoryId = musicalGuid
-            });    
         }
     }
-
 }

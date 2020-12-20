@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using GloboTicket.Services.ShoppingBasket.DbContexts;
-using GloboTicket.Services.ShoppingBasket.Entities;
 using Microsoft.EntityFrameworkCore;
+using SegaetshoResources.Services.ShoppingBasket.DbContexts;
+using SegaetshoResources.Services.ShoppingBasket.Entities;
 
-namespace GloboTicket.Services.ShoppingBasket.Repositories
+namespace SegaetshoResources.Services.ShoppingBasket.Repositories
 {
     public class EventRepository : IEventRepository
     {

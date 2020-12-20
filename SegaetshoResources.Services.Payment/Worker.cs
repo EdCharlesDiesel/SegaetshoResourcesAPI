@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SegaetshoResources.Messages
+namespace SegaetshoResources.Services.Payment
 {
     public class Worker : BackgroundService
     {

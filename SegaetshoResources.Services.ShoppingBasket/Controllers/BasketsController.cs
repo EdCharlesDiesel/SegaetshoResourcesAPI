@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GloboTicket.Services.ShoppingBasket.Models;
-using GloboTicket.Services.ShoppingBasket.Repositories;
+
 using Microsoft.AspNetCore.Mvc;
 using SegaetshoResources.Services.ShoppingBasket.Entities;
+using SegaetshoResources.Services.ShoppingBasket.Models;
+using SegaetshoResources.Services.ShoppingBasket.Repositories;
 
 namespace SegaetshoResources.Services.ShoppingBasket.Controllers
 {
@@ -23,7 +24,7 @@ namespace SegaetshoResources.Services.ShoppingBasket.Controllers
         }
 
         [HttpGet("{basketId}", Name = "GetBasket")]
-        public async Task<ActionResult<Basket>> Get(Guid basketId)
+        public async Task<ActionResult<Entities.Basket>> Get(Guid basketId)
         {
             var basket = await _basketRepository.GetBasketById(basketId);
             if (basket == null)
@@ -31,20 +32,20 @@ namespace SegaetshoResources.Services.ShoppingBasket.Controllers
                 return NotFound();
             }
 
-            var result = _mapper.Map<Basket>(basket);
+            var result = _mapper.Map<Entities.Basket>(basket);
             result.NumberOfItems = basket.BasketLines.Sum(bl => bl.TicketAmount);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Basket>> Post(BasketForCreation basketForCreation)
+        public async Task<ActionResult<Entities.Basket>> Post(BasketForCreation basketForCreation)
         {
             var basketEntity = _mapper.Map<Entities.Basket>(basketForCreation);
 
             _basketRepository.AddBasket(basketEntity);
             await _basketRepository.SaveChanges();
 
-            var basketToReturn = _mapper.Map<Basket>(basketEntity);
+            var basketToReturn = _mapper.Map<Models.Basket>(basketEntity);
 
             return CreatedAtRoute(
                 "GetBasket",

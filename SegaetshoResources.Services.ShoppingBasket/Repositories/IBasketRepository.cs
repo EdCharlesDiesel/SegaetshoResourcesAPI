@@ -1,8 +1,9 @@
-﻿using GloboTicket.Services.ShoppingBasket.Entities;
+﻿
+using SegaetshoResources.Services.ShoppingBasket.Entities;
 using System;
 using System.Threading.Tasks;
 
-namespace GloboTicket.Services.ShoppingBasket.Repositories
+namespace SegaetshoResources.Services.ShoppingBasket.Repositories
 {
     public interface IBasketRepository
     {

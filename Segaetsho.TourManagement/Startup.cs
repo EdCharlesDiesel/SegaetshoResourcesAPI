@@ -1,8 +1,13 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using SegaetshoResources.Services.EventCategory.DbContexts;
+using System;
 
 namespace SegaetshoResources.Services.TourManagement
 {
@@ -23,13 +28,13 @@ namespace SegaetshoResources.Services.TourManagement
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddScoped<IBasketRepository, BasketRepository>();
-            services.AddScoped<IBasketLinesRepository, BasketLinesRepository>();
-            services.AddScoped<IEventRepository, EventRepository>();
-            services.AddHttpClient<IEventCatalogService, EventCatalogService>(c =>
-                c.BaseAddress = new Uri(Configuration["ApiConfigs:EventCatalog:Uri"]));
+            //services.AddScoped<IBasketRepository, BasketRepository>();
+            //services.AddScoped<IBasketLinesRepository, BasketLinesRepository>();
+            //services.AddScoped<IEventRepository, EventRepository>();
+            //services.AddHttpClient<IEventCatalogService, EventCatalogService>(c =>
+            //    c.BaseAddress = new Uri(Configuration["ApiConfigs:EventCatalog:Uri"]));
 
-            services.AddDbContext<ShoppingBasketDbContext>(options =>
+            services.AddDbContext<TourManagementDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });

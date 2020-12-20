@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using SegaetshoResources.Services.EventCategory.DbContexts;
 using SegaetshoResources.Services.EventCategory.Repositories;
 using System;
@@ -12,7 +13,7 @@ using System;
 namespace SegaetshoResources.Services.EventCategory
 {
    
-   public class Startup
+  public class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -21,31 +22,23 @@ namespace SegaetshoResources.Services.EventCategory
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddDbContext<EventCatalogDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IEventRepository, EventRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            //services.AddScoped<IBasketRepository, BasketRepository>();
-            //services.AddScoped<IBasketLinesRepository, BasketLinesRepository>();
-            services.AddScoped<IEventRepository, EventRepository>();
-            services.AddHttpClient<IEventCatalogService, EventCatalogService>(c =>
-                c.BaseAddress = new Uri(Configuration["ApiConfigs:EventCatalog:Uri"]));
-
-            services.AddDbContext<EventCatalogDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            });
-
+            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Event Category API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EventDto Catalog API", Version = "v1" });
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -59,7 +52,7 @@ namespace SegaetshoResources.Services.EventCategory
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shopping Basket API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EventDto Catalog API V1");
 
             });
 
@@ -74,3 +67,5 @@ namespace SegaetshoResources.Services.EventCategory
         }
     }
 }
+
+      

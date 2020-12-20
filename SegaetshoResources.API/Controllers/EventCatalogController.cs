@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Segaetsho.API.Controllers.Web.Extensions;
-using Segaetsho.API.Controllers.Web.Models.View;
 using Microsoft.AspNetCore.Mvc;
-using Segaetsho.API.Controllers.Web.Models;
-using Segaetsho.API.Controllers.Web.Models.Api;
-using Segaetsho.API.Controllers.Web.Services;
+
 
 namespace SegaetshoResources.API.Controllers
 {
